@@ -1,9 +1,8 @@
-const { loadEnvFile } = require('node:process');
-const express = require('express');
-const authorsRouter = require('./routes/authors');
-const postsRouter = require('./routes/posts');
+import "dotenv/config";
+import express from "express";
+import authorsRouter from "./routes/authors";
+import postsRouter from "./routes/posts";
 
-loadEnvFile('.env');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -35,6 +34,16 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Error interno del servidor' });
 });
+
+import { pool } from "./db/config.js";
+
+pool.query("SELECT NOW()")
+  .then(res => {
+    console.log("✅ Conexión exitosa:", res.rows[0]);
+  })
+  .catch(err => {
+    console.error("❌ Error de conexión:", err.message);
+  });
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

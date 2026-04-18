@@ -1,4 +1,4 @@
-const express = require('express');
+import express from "express";
 const router = express.Router();
 
 // Datos en memoria (se reemplazarán con base de datos)
