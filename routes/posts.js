@@ -1,5 +1,9 @@
 import express from "express";
-const router = express.Router();
+const router = express.Router(); // Datos en memoria (se reemplazarán con base de datos)
+import { loadEnvFile } from "node:process"; // Para cargar variables de entorno
+loadEnvFile('.env');
+import pool from "../db/config.js"; // Importamos el pool de conexiones a la base de datos
+
 
 // Datos en memoria (se reemplazarán con base de datos)
 let posts = [
