@@ -4,7 +4,6 @@ import { loadEnvFile } from "node:process"; // Para cargar variables de entorno
 loadEnvFile('.env');
 import pool from "../db/config.js";
 
-
 // GET /api/authors - Obtener todos los autores
 router.get('/', async (req, res) => { 
   try {
