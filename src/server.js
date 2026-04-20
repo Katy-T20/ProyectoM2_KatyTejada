@@ -3,6 +3,7 @@ import express from "express";
 import authorsRouter from "./routes/authors.js";
 import postsRouter from "./routes/posts.js";
 import pool from "./db/config.js"; 
+import app from "./app.js"; 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
