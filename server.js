@@ -1,7 +1,8 @@
 import "dotenv/config";
 import express from "express";
-import authorsRouter from "./routes/authors";
-import postsRouter from "./routes/posts";
+import authorsRouter from "./routes/authors.js";
+import postsRouter from "./routes/posts.js";
+import pool from "./db/config.js"; 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,8 +35,6 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Error interno del servidor' });
 });
-
-import { pool } from "./db/config.js";
 
 pool.query("SELECT NOW()")
   .then(res => {

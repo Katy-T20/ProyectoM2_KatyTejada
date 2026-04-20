@@ -1,9 +1,7 @@
-import express from "express";
-const router = express.Router(); 
-import { loadEnvFile } from "node:process"; // Para cargar variables de entorno
-loadEnvFile('.env');
-import pool from "../db/config.js"; // Importamos el pool de conexiones a la base de datos
+import { Router } from "express";
+import pool from "../db/config.js";
 
+const router = Router();
 
 // GET /api/posts - Obtener todos los posts
 router.get('/', async (req, res) => {
@@ -130,4 +128,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

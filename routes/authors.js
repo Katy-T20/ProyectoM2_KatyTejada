@@ -1,8 +1,8 @@
-import express from "express";
-const router = express.Router(); // Datos en memoria (se reemplazarán con base de datos)
-import { loadEnvFile } from "node:process"; // Para cargar variables de entorno
-loadEnvFile('.env');
+import { Router } from "express";
 import pool from "../db/config.js";
+
+const router = Router();
+
 
 // GET /api/authors - Obtener todos los autores
 router.get('/', async (req, res) => { 
@@ -105,4 +105,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
