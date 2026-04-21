@@ -1,5 +1,7 @@
+import pool from "../db/config.js"; 
+
 // GET /api/authors
-export const getAllAuthors = (req, res, next) => { 
+export const getAllAuthors = async (req, res, next) => { 
   try {
     const result = await pool.query('SELECT * FROM authors ORDER BY name');
     res.json(result.rows);
@@ -98,5 +100,3 @@ export const deleteAuthor = async (req, res, next) => {
     res.status(500).json({ error: 'Error eliminando autor' });
   }
 };
-
-export default router;

@@ -1,5 +1,4 @@
 import { Router } from "express";
-import pool from "../db/config.js";
 import { createPost, deletePost, getAllPosts, getPostByAuthor, getPostById, updatePost } from "../controllers/postsControllers.js";
 
 const router = Router();

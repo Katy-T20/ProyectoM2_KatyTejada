@@ -1,5 +1,6 @@
 import express from "express";
 import router from "./routes/index.js";
+import { errorHandler } from "./Middlewares/ErrorHandler.js"
 
 const app = express();
 app.use(express.json());
@@ -27,5 +28,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Error interno del servidor' });
 });
+
+app.use(errorHandler);
 
 export default app;

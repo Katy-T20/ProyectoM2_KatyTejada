@@ -1,3 +1,5 @@
+import pool from "../db/config.js";
+
 // GET /api/posts
 export const getAllPosts = async (req, res, next) => {
   const { published } = req.query;
@@ -122,5 +124,3 @@ export const deletePost = async (req, res, next) => {
     res.status(500).json({ error: 'Error eliminando post' });
   }
 };
-
-export default router;

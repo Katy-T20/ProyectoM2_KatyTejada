@@ -1,6 +1,5 @@
 import { Router } from "express";
-import pool from "../db/config.js";
-import { createAuthor, deleteAuthor, getAllAuthors, getAuthorsById, updateAuthor } from "../controllers/authorsControllers.js";
+import { createAuthor, deleteAuthor, getAllAuthors, getAuthorById, updateAuthor } from "../controllers/authorsControllers.js";
 
 const router = Router();
 
@@ -9,7 +8,7 @@ const router = Router();
 router.get("/", getAllAuthors)
 
 // GET /api/authors/:id
-router.get("/:id", getAuthorsById)
+router.get("/:id", getAuthorById)
 
 // POST /api/authors
 router.post("/", createAuthor)
