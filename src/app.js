@@ -4,6 +4,7 @@ import { errorHandler } from "./Middlewares/ErrorHandler.js"
 
 const app = express();
 app.use(express.json());
+app.use("/api",router);
 
 // Ruta raíz
 app.get('/', (req, res) => {
@@ -15,8 +16,6 @@ app.get('/', (req, res) => {
     }
   });
 });
-
-app.use(router); 
 
 // Manejo de rutas no encontradas 404
 app.use((req, res) => {

@@ -1,6 +1,6 @@
-app.use((err, req, res, next) => {
-  console.error('Error no manejado:', err);
-  
+export function errorHandler(err, req, res, next) {
+  console.error("Error no manejado:", err);
+
   // Error de PostgreSQL
   if (err.code) {
     if (err.code === '23505') {
@@ -14,5 +14,5 @@ app.use((err, req, res, next) => {
     }
   }
   
-  res.status(500).json({ error: 'Error interno del servidor' });
-});
+  res.status(500).json({ error: "Error interno del servidor" });
+}

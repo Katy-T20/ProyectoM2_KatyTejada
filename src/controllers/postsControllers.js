@@ -1,4 +1,5 @@
 import pool from "../db/config.js";
+import { validarAuthorId, validarContent, validarTitulo } from "../utils/postsValidators.js";
 
 // GET /api/posts
 export const getAllPosts = async (req, res, next) => {
@@ -45,10 +46,13 @@ export const getPostById = async (req, res, next) => {
 // GET /api/posts/author/:authorId
 export const getPostByAuthor = async (req, res, next) => {
   try {
-    const result = await pool.query(
-      'SELECT * FROM posts WHERE author_id = $1 ORDER BY created_at DESC',
-      [req.params.authorId]
-    );
+    const author = await pool.query("SELECT * FROM authors WHERE id = $1", [authorId]);
+if (author.rows.length === 0) {
+    return res.status(404).json({ error: "Autor no encontrado" });
+}
+
+const posts = await pool.query("SELECT * FROM posts WHERE author_id = $1", [authorId]);
+return res.status(200).json(posts.rows); // [] si no tiene posts
     
     res.json(result.rows);
   } catch (error) {
@@ -60,6 +64,20 @@ export const getPostByAuthor = async (req, res, next) => {
 // POST /api/posts
 export const createPost = async (req, res, next) => {
   const { title, content, author_id, published } = req.body;
+
+  const errorTitulo = validarTitulo(title);
+    if (errorTitulo) return res.status(400).json({ error: errorTitulo });
+
+  const errorContent = validarContent(content);
+    if (errorContent) return res.status(400).json({ error: errorContent });
+
+  const errorAuthorId = validarAuthorId(author_id);
+    if (errorAuthorId) return res.status(400).json({ error: errorAuthorId });
+
+  const post = { id: nextId++, title, content, author_id, published }
+  author.push(post);
+  res.status(201).json(post);
+
   
   if (!title || !content || !author_id) {
     return res.status(400).json({ 
