@@ -6,7 +6,7 @@ info:
 
 servers:
   - url: http://localhost:3000
-  - url: http://proyectom2katytejada-production.up.railway.app
+  - url: https://proyectom2katytejada-production.up.railway.app/api-docs
     description: Servidor local
 
 tags:
