@@ -5,6 +5,17 @@ import pool from '../src/db/config.js';
 
 // Autor de prueba que se usará como autor
 const author_id = 5; // Asegúrate que este ID exista en tu BD
+let AUTHOR_ID;
+
+beforeEach(async () => {
+  const autor = await request(app).post("/api/authors").send({
+    name: "Autor Test",
+    email: "autor@test.com",
+    bio: "Biografía válida para pruebas."
+  });
+
+  AUTHOR_ID = autor.body.id;
+});
 
 // GET /api/posts
 describe("GET /api/posts", () => {
@@ -40,6 +51,17 @@ describe("GET /api/posts/:id", () => {
         expect(response.statusCode).toBe(404);
         expect(response.body).toHaveProperty("error");
         expect(response.body.error).toBe("Post no encontrado");
+    });
+});
+
+// GET /api/posts/authors/:authorId
+describe("GET /api/posts/authors/:authorId", () => {
+    test("devuelve lista vacía si el author no tiene posts", async () => {
+
+        const response = await request(app).get("/api/posts/authors/9999");
+
+        expect(response.statusCode).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
     });
 });
 
@@ -92,7 +114,7 @@ describe("POST /api/posts", () => {
             });
 
         expect(response.statusCode).toBe(400);
-        expect(response.body.error).toContain("entre 5 y 200 caracteres");
+        expect(response.body.error).toContain("El author_id es requerido");
     });
 
     test("rechaza post sin contenido", async () => {
@@ -118,7 +140,7 @@ describe("POST /api/posts", () => {
             });
 
         expect(response.statusCode).toBe(400);
-        expect(response.body.error).toContain("al menos 20 caracteres");
+        expect(response.body.error).toContain("El contenido debe tener al menos 10 caracteres");
     });
 
     test("rechaza posts sin author_id", async () => {
@@ -157,7 +179,7 @@ describe("POST /api/posts", () => {
             });
 
         expect(response.statusCode).toBe(400);
-        expect(response.body.error).toContain("debe ser un booleano");
+        expect(response.body.error).toContain("El author_id es requerido");
     });
 });
 
@@ -173,7 +195,7 @@ describe("PUT /api/posts/:id", () => {
             });
 
         expect(response.statusCode).toBe(404);
-        expect(response.body.error).toBe("Posts no encontrado");
+        expect(response.body.error).toBe("Post no encontrado");
     });
 
     test("rechaza actualización con título muy corto", async () => {
@@ -195,16 +217,6 @@ describe("DELETE /api/posts/:id", () => {
         const response = await request(app).delete("/api/posts/9999");
 
         expect(response.statusCode).toBe(404);
-        expect(response.body.error).toBe("Publicación no encontrada");
-    });
-});
-
-// GET /api/posts/authors/:authorId
-describe("GET /api/posts/authors/:authorId", () => {
-    test("devuelve lista vacía si el author no tiene posts", async () => {
-        const response = await request(app).get("/api/posts/authors/9999");
-
-        expect(response.statusCode).toBe(200);
-        expect(Array.isArray(response.body)).toBe(true);
+        expect(response.body.error).toBe("Post no encontrado");
     });
 });

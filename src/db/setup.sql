@@ -22,8 +22,9 @@ INSERT INTO authors (name, email, bio) VALUES
   ('María López', 'maria@example.com', 'Ingeniera de software con foco en APIs REST');
 
 INSERT INTO posts (title, content, author_id, published) VALUES
-  ('Introducción a Node.js', 'Node.js es un runtime de JavaScript...', 5, true),
-  ('PostgreSQL vs MySQL', 'Ambas bases de datos tienen ventajas...', 5, true),
-  ('APIs RESTful', 'REST es un estilo arquitectónico...', 5, true),
-  ('Manejo de errores en Express', 'El manejo apropiado de errores...', 7, false),
-  ('Async/Await explicado', 'Las promesas simplifican el código asíncrono...', 5, false);
+  ('Introducción a Node.js', 'Node.js es un runtime de JavaScript...', 1, true),
+  ('PostgreSQL vs MySQL', 'Ambas bases de datos tienen ventajas...', 1, true),
+  ('APIs RESTful', 'REST es un estilo arquitectónico...', 2, true),
+  ('Manejo de errores en Express', 'El manejo apropiado de errores...', 3, false),
+  ('Async/Await explicado', 'Las promesas simplifican el código asíncrono...', 1, false);
+

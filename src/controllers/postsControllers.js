@@ -52,7 +52,7 @@ if (author.rows.length === 0) {
 }
 
 const posts = await pool.query("SELECT * FROM posts WHERE author_id = $1", [authorId]);
-return res.status(200).json(posts.rows); // [] si no tiene posts
+return res.status(200).json(posts.rows);
     
     res.json(result.rows);
   } catch (error) {
@@ -66,62 +66,66 @@ export const createPost = async (req, res, next) => {
   const { title, content, author_id, published } = req.body;
 
   const errorTitulo = validarTitulo(title);
-    if (errorTitulo) return res.status(400).json({ error: errorTitulo });
+  if (errorTitulo) return res.status(400).json({ error: errorTitulo });
 
   const errorContent = validarContent(content);
-    if (errorContent) return res.status(400).json({ error: errorContent });
+  if (errorContent) return res.status(400).json({ error: errorContent });
 
   const errorAuthorId = validarAuthorId(author_id);
-    if (errorAuthorId) return res.status(400).json({ error: errorAuthorId });
+  if (errorAuthorId) return res.status(400).json({ error: errorAuthorId });
 
-  const post = { id: nextId++, title, content, author_id, published }
-  author.push(post);
-  res.status(201).json(post);
-
-  
-  if (!title || !content || !author_id) {
-    return res.status(400).json({ 
-      error: 'Título, contenido y author_id son requeridos' 
-    });
-  }
-  
   try {
+    const author = await pool.query(
+      "SELECT id FROM authors WHERE id = $1",
+      [author_id]
+    );
+
+    if (author.rows.length === 0) {
+      return res.status(404).json({ error: "El autor especificado no existe" });
+    }
+
     const result = await pool.query(
-      'INSERT INTO posts (title, content, author_id, published) VALUES ($1, $2, $3, $4) RETURNING *',
+      "INSERT INTO posts (title, content, author_id, published) VALUES ($1, $2, $3, $4) RETURNING *",
       [title, content, author_id, published || false]
     );
-    
-    res.status(201).json(result.rows[0]);
+
+    return res.status(201).json(result.rows[0]);
+
   } catch (error) {
-    console.error('Error creando post:', error);
-    
-    if (error.code === '23503') {
-      return res.status(404).json({ error: 'El autor especificado no existe' });
-    }
-    
-    res.status(500).json({ error: 'Error creando post' });
+    console.error("Error creando post:", error);
+    return res.status(500).json({ error: "Error creando post" });
   }
 };
 
 // PUT /api/posts/:id
 export const updatePost = async (req, res, next) => {
-  const { title, content, published } = req.body;
-  
-  try {
-    const result = await pool.query(
-      'UPDATE posts SET title = COALESCE($1, title), content = COALESCE($2, content), published = COALESCE($3, published) WHERE id = $4 RETURNING *',
-      [title, content, published, req.params.id]
-    );
-    
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Post no encontrado' });
+    const { title, content, published } = req.body;
+
+    if (title !== undefined) {
+        const errorTitulo = validarTitulo(title);
+        if (errorTitulo) return res.status(400).json({ error: errorTitulo });
     }
-    
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error('Error actualizando post:', error);
-    res.status(500).json({ error: 'Error actualizando post' });
-  }
+
+    if (content !== undefined) {
+        const errorContent = validarContent(content);
+        if (errorContent) return res.status(400).json({ error: errorContent });
+    }
+
+    try {
+        const result = await pool.query(
+            'UPDATE posts SET title = COALESCE($1, title), content = COALESCE($2, content), published = COALESCE($3, published) WHERE id = $4 RETURNING *',
+            [title, content, published, req.params.id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Post no encontrado' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Error actualizando post:', error);
+        res.status(500).json({ error: 'Error actualizando post' });
+    }
 };
 
 // DELETE /api/posts/:id

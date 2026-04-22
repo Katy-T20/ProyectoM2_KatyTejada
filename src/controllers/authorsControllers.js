@@ -2,7 +2,7 @@ import pool from "../db/config.js";
 import { validarEmail, validarNombre, validarBio } from "../utils/authorsValidators.js";
 
 // GET /api/authors
-export const getAllAuthors = async (req, res) => {
+export const getAllAuthors = async (req, res, next) => {
   try {
     const result = await pool.query("SELECT * FROM authors ORDER BY id");
     res.json(result.rows);
@@ -13,7 +13,7 @@ export const getAllAuthors = async (req, res) => {
 };
 
 // GET /api/authors/:id
-export const getAuthorById = async (req, res) => {
+export const getAuthorById = async (req, res, next) => {
   try {
     const result = await pool.query(
       "SELECT * FROM authors WHERE id = $1",
@@ -32,7 +32,7 @@ export const getAuthorById = async (req, res) => {
 };
 
 // POST /api/authors
-export const createAuthor = async (req, res) => {
+export const createAuthor = async (req, res, next) => {
   const { name, email, bio } = req.body;
 
   // VALIDACIONES
@@ -64,7 +64,7 @@ export const createAuthor = async (req, res) => {
 };
 
 // PUT /api/authors/:id
-export const updateAuthor = async (req, res) => {
+export const updateAuthor = async (req, res, next) => {
   const { name, email, bio } = req.body;
 
   // VALIDACIONES
@@ -106,7 +106,7 @@ export const updateAuthor = async (req, res) => {
 };
 
 // DELETE /api/authors/:id
-export const deleteAuthor = async (req, res) => {
+export const deleteAuthor = async (req, res, next) => {
   try {
     const result = await pool.query(
       "DELETE FROM authors WHERE id = $1",

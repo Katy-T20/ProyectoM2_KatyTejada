@@ -18,16 +18,18 @@ describe("GET /api/authors", () => {
 //GET /api/authors/:id
 describe("GET /api/authors/:id", () => {
     test("devuelve un autor por ID", async () => {
-        const  = await request(app).get("/api/authors/id");
+        const lista = await request(app).get("/api/authors");
+        const authorId = lista.body[0].id;
+
+        const response = await request(app).get(`/api/authors/${authorId}`);
 
         expect(response.statusCode).toBe(200);
-        expect(response.body).toHaveProperty("id", 5);
-        expect(response.body).toHaveProperty("name");
-        expect(response.body).toHaveProperty("email");
+        expect(typeof response.body.id).toBe("number");
+        expect(typeof response.body.name).toBe("string");
+        expect(typeof response.body.email).toBe("string");
     });
-    
 
-    test("devuelve 404 si el usuario no existe", async () => {
+    test("devuelve 404 si el autor no existe", async () => {
         const response = await request(app).get("/api/authors/9999");
 
         expect(response.statusCode).toBe(404);
