@@ -1,7 +1,8 @@
 import "dotenv/config";
-import pool from "./src/db/config.js"; 
-import app from "./src/app.js"; 
+import pool from "./src/db/config.js";
+import app from "./src/app.js";
 
+// ✅ Sin __dirname, sin YAML, sin Swagger aquí
 const PORT = process.env.PORT || 3000;
 
 pool.query("SELECT NOW()")

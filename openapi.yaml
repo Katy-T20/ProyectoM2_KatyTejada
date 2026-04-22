@@ -1,0 +1,565 @@
+openapi: 3.0.3
+info:
+  title: ProyectoM2_KatyTejada
+  version: 1.0.0
+  description: API para gestionar autores y posts de un blog.
+
+servers:
+  - url: http://localhost:3000
+  - url: http://proyectom2katytejada-production.up.railway.app
+    description: Servidor local
+
+tags:
+  - name: Authors
+    description: Operaciones relacionadas con autores
+  - name: Posts
+    description: Operaciones relacionadas con posts
+
+paths:
+  /api/authors:
+    get:
+      tags: [Authors]
+      summary: Obtener todos los autores
+      operationId: getAllAuthors
+      responses:
+        "200":
+          description: Lista de autores obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Author"
+        "500":
+          description: Error obteniendo autores
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags: [Authors]
+      summary: Crear un nuevo autor
+      operationId: createAuthor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorCreate"
+            example:
+              name: "Juan Pérez"
+              email: "juan@example.com"
+              bio: "Autor de contenido técnico y de programación."
+      responses:
+        "201":
+          description: Autor creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+        "400":
+          description: Datos inválidos para crear autor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                nombreInvalido:
+                  summary: Nombre demasiado corto
+                  value:
+                    error: "El nombre debe tener al menos 3 caracteres"
+                emailInvalido:
+                  summary: Email con formato inválido
+                  value:
+                    error: "El email no es válido"
+                bioInvalida:
+                  summary: Bio demasiado corta o larga
+                  value:
+                    error: "La biografía debe tener entre 10 y 200 caracteres"
+        "409":
+          description: Conflicto por email duplicado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "El email ya está registrado"
+        "500":
+          description: Error creando autor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/authors/{id}:
+    get:
+      tags: [Authors]
+      summary: Obtener un autor por ID
+      operationId: getAuthorById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del autor
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Autor encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+        "404":
+          description: Autor no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Autor no encontrado"
+        "500":
+          description: Error obteniendo autor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags: [Authors]
+      summary: Actualizar un autor
+      operationId: updateAuthor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del autor
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorUpdate"
+            example:
+              name: "Juan Actualizado"
+              email: "juan.actualizado@example.com"
+              bio: "Bio actualizada del autor."
+      responses:
+        "200":
+          description: Autor actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+        "400":
+          description: Datos inválidos para actualizar autor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Autor no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Autor no encontrado"
+        "409":
+          description: Conflicto por email duplicado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "El email ya está registrado"
+        "500":
+          description: Error actualizando autor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags: [Authors]
+      summary: Eliminar un autor
+      operationId: deleteAuthor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del autor
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Autor eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Autor eliminado exitosamente"
+        "404":
+          description: Autor no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Autor no encontrado"
+        "500":
+          description: Error eliminando autor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/posts:
+    get:
+      tags: [Posts]
+      summary: Obtener todos los posts
+      operationId: getAllPosts
+      parameters:
+        - name: published
+          in: query
+          required: false
+          description: Filtrar por estado de publicación
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Lista de posts obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+        "500":
+          description: Error obteniendo posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags: [Posts]
+      summary: Crear un nuevo post
+      operationId: createPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostCreate"
+            example:
+              title: "Título de prueba válido"
+              content: "Este es un contenido de prueba que tiene más de 20 caracteres."
+              author_id: 1
+              published: false
+      responses:
+        "201":
+          description: Post creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "400":
+          description: Datos inválidos para crear post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                tituloInvalido:
+                  summary: Título muy corto
+                  value:
+                    error: "El título debe tener entre 5 y 200 caracteres"
+                contenidoInvalido:
+                  summary: Contenido muy corto
+                  value:
+                    error: "El contenido debe tener al menos 20 caracteres"
+                authorIdRequerido:
+                  summary: Falta author_id
+                  value:
+                    error: "El author_id es requerido"
+        "404":
+          description: Autor no encontrado al crear post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "El autor especificado no existe"
+        "500":
+          description: Error creando post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/posts/{id}:
+    get:
+      tags: [Posts]
+      summary: Obtener un post por ID
+      operationId: getPostById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del post
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Post encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "404":
+          description: Post no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Post no encontrado"
+        "500":
+          description: Error obteniendo post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags: [Posts]
+      summary: Actualizar un post
+      operationId: updatePost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del post
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostUpdate"
+            example:
+              title: "Título actualizado"
+              content: "Contenido actualizado con más de 20 caracteres."
+              published: true
+      responses:
+        "200":
+          description: Post actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "400":
+          description: Datos inválidos para actualizar post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Post no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Post no encontrado"
+        "500":
+          description: Error actualizando post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags: [Posts]
+      summary: Eliminar un post
+      operationId: deletePost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del post
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Post eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Post eliminado exitosamente"
+        "404":
+          description: Post no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "Post no encontrado"
+        "500":
+          description: Error eliminando post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/posts/author/{authorId}:
+    get:
+      tags: [Posts]
+      summary: Obtener posts por autor
+      operationId: getPostByAuthor
+      parameters:
+        - name: authorId
+          in: path
+          required: true
+          description: ID del autor
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lista de posts del autor (puede ser vacía)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+        "500":
+          description: Error obteniendo posts del autor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Juan Pérez"
+        email:
+          type: string
+          format: email
+          example: "juan@example.com"
+        bio:
+          type: string
+          nullable: true
+          example: "Autor de contenido técnico y de programación."
+    AuthorCreate:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          minLength: 3
+          example: "Juan Pérez"
+        email:
+          type: string
+          format: email
+          example: "juan@example.com"
+        bio:
+          type: string
+          minLength: 10
+          maxLength: 200
+          nullable: true
+          example: "Autor de contenido técnico y de programación."
+    AuthorUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+        email:
+          type: string
+          format: email
+        bio:
+          type: string
+          minLength: 10
+          maxLength: 200
+          nullable: true
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        title:
+          type: string
+          example: "Título de prueba válido"
+        content:
+          type: string
+          example: "Este es un contenido de prueba que tiene más de 20 caracteres."
+        author_id:
+          type: integer
+          example: 1
+        published:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-01-01T12:00:00.000Z"
+    PostCreate:
+      type: object
+      required:
+        - title
+        - content
+        - author_id
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 200
+          example: "Título de prueba válido"
+        content:
+          type: string
+          minLength: 20
+          example: "Este es un contenido de prueba que tiene más de 20 caracteres."
+        author_id:
+          type: integer
+          example: 1
+        published:
+          type: boolean
+          example: false
+    PostUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 200
+        content:
+          type: string
+          minLength: 20
+        published:
+          type: boolean
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Mensaje de error descriptivo"

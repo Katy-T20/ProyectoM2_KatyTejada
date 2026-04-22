@@ -46,18 +46,18 @@ export const getPostById = async (req, res, next) => {
 // GET /api/posts/author/:authorId
 export const getPostByAuthor = async (req, res, next) => {
   try {
-    const author = await pool.query("SELECT * FROM authors WHERE id = $1", [authorId]);
-if (author.rows.length === 0) {
-    return res.status(404).json({ error: "Autor no encontrado" });
-}
+    const { authorId } = req.params;
 
-const posts = await pool.query("SELECT * FROM posts WHERE author_id = $1", [authorId]);
-return res.status(200).json(posts.rows);
-    
-    res.json(result.rows);
+    const posts = await pool.query(
+      "SELECT * FROM posts WHERE author_id = $1",
+      [authorId]
+    );
+
+    return res.status(200).json(posts.rows);
+
   } catch (error) {
-    console.error('Error obteniendo posts del autor:', error);
-    res.status(500).json({ error: 'Error obteniendo posts del autor' });
+    console.error("Error obteniendo posts del autor:", error);
+    res.status(500).json({ error: "Error obteniendo posts del autor" });
   }
 };
 
