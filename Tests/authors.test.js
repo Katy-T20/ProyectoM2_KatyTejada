@@ -4,21 +4,21 @@ import app from '../src/app.js';
 import pool from '../src/db/config.js';
 
 
-// Prueba para GET /api/authors
+//GET /api/authors
 describe("GET /api/authors", () => {
-    test("devuelve una lista de usuarios", async () => {
+    test("devuelve una lista de autores", async () => {
         const response = await request(app).get("/api/authors");
-
+ 
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body)).toBe(true);
         expect(response.body.length).toBeGreaterThan(0);
     });
 });
 
-// Prueba para GET /api/authors/:id
+//GET /api/authors/:id
 describe("GET /api/authors/:id", () => {
-    test("devuelve un usuario por ID", async () => {
-        const response = await request(app).get("/api/authors/5");
+    test("devuelve un autor por ID", async () => {
+        const  = await request(app).get("/api/authors/id");
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toHaveProperty("id", 5);
