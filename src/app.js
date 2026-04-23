@@ -5,12 +5,14 @@ import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from "path";
 import { fileURLToPath } from "url";
+import cors from "cors";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Swagger ✅ ANTES del 404
 const swaggerDocument = YAML.load(path.join(__dirname, "../openapi.yaml"));
