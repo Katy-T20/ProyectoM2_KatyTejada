@@ -14,7 +14,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Swagger ✅ ANTES del 404
 const swaggerDocument = YAML.load(path.join(__dirname, "../openapi.yaml"));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
