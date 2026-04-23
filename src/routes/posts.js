@@ -3,22 +3,16 @@ import { createPost, deletePost, getAllPosts, getPostByAuthor, getPostById, upda
 
 const router = Router();
 
-// GET /api/posts - Obtener todos los posts
-router.get('/', getAllPosts)
+router.get('/', getAllPosts);
 
-// GET /api/posts/:id - Obtener un post por ID
-router.get('/:id', getPostById)
+// ✅ Ruta estática ANTES que la dinámica
+router.get('/authors/:authorId', getPostByAuthor);
 
-// GET /api/posts/author/:authorId - Obtener posts por autor
-router.get('/author/:authorId', getPostByAuthor)
+router.get('/:id', getPostById);
+router.post('/', createPost);
+router.put('/:id', updatePost);
+router.delete('/:id', deletePost);
 
-// POST /api/posts - Crear un nuevo post
-router.post('/', createPost)
 
-// PUT /api/posts/:id - Actualizar un post
-router.put('/:id', updatePost)
-
-// DELETE /api/posts/:id - Eliminar un post
-router.delete('/:id', deletePost)
 
 export default router;

@@ -1,5 +1,5 @@
 import pool from "../db/config.js";
-import { validarAuthorId, validarContent, validarTitulo } from "../utils/postsValidators.js";
+import { validarAuthorId, validarContent, validarTitulo, validarPublished } from "../utils/postsValidators.js";
 
 // GET /api/posts
 export const getAllPosts = async (req, res, next) => {
@@ -73,6 +73,9 @@ export const createPost = async (req, res, next) => {
 
   const errorAuthorId = validarAuthorId(author_id);
   if (errorAuthorId) return res.status(400).json({ error: errorAuthorId });
+
+  const errorPublished = validarPublished(published);
+  if (errorPublished) return res.status(400).json({ error: errorPublished });
 
   try {
     const author = await pool.query(

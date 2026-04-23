@@ -1,5 +1,5 @@
 export function validarTitulo(title) {
-  if (title === undefined || title === null ) {
+  if (title === undefined || title === null) {
     return "El titulo es requerido";
   }
   if (typeof title !== "string") {
@@ -8,8 +8,8 @@ export function validarTitulo(title) {
   if (title.trim().length === 0) {
     return "El titulo no puede estar vacío";
   }
-  if (title.trim().length < 2 || title.trim().length >100) {
-    return "El titulo debe tener entre 2 y 100 caracteres";
+  if (title.trim().length < 5 || title.trim().length > 200) {
+    return "El titulo debe tener entre 5 y 200 caracteres";
   }
   return null;
 }
@@ -42,7 +42,7 @@ export function validarAuthorId(author_id) {
 
 export function validarPublished(published) {
   if (published === undefined || published === null) {
-    return null; // opcional, no es requerido
+    return null;
   }
   if (typeof published !== "boolean") {
     return "published debe ser true o false";
